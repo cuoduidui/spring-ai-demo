@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 聊天对话</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6fa; margin: 0; }
+        .chat-container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 24px; }
+        .messages { min-height: 300px; max-height: 500px; overflow-y: auto; margin-bottom: 16px; }
+        .message { margin-bottom: 18px; }
+        .user { color: #0078d7; font-weight: bold; }
+        .ai { color: #222; }
+        .input-row { display: flex; gap: 8px; }
+        .input-row input, .input-row textarea { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #ddd; }
+        .input-row button { padding: 8px 18px; border: none; border-radius: 4px; background: #0078d7; color: #fff; cursor: pointer; }
+        .input-row button:disabled { background: #aaa; }
+        .markdown-body { font-size: 15px; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown.min.css">
+</head>
+<body>
+<div class="chat-container">
+    <div class="messages" id="messages"></div>
+    <form id="chatForm" class="input-row">
+        <textarea id="userInput" rows="2" placeholder="请输入你的问题..." required></textarea>
+        <button type="submit">发送</button>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const messagesDiv = document.getElementById('messages');
+const chatForm = document.getElementById('chatForm');
+const userInput = document.getElementById('userInput');
+
+function appendMessage(role, content, isMarkdown = false) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message ' + role;
+    if (role === 'user') {
+        msgDiv.innerHTML = `<span class='user'>你：</span> <span>${content}</span>`;
+    } else {
+        msgDiv.innerHTML = `<span class='ai'>AI：</span> <span class='markdown-body'>${isMarkdown ? marked.parse(content) : content}</span>`;
+    }
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const text = userInput.value.trim();
+    if (!text) return;
+    appendMessage('user', text);
+    userInput.value = '';
+    fetchChat(text);
+});
+
+function fetchChat(message) {
+    let aiMsg = '';
+    let aiDiv = document.createElement('div');
+    aiDiv.className = 'message ai';
+    aiDiv.innerHTML = `<span class='ai'>AI：</span> <span class='markdown-body'></span>`;
+    messagesDiv.appendChild(aiDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    const mdSpan = aiDiv.querySelector('.markdown-body');
+
+    const es = new EventSource(`/chat/chat1?message="${encodeURIComponent(message)}"`);
+    es.onmessage = function(event) {
+        aiMsg += event.data;
+        mdSpan.innerHTML = marked.parse(aiMsg);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    };
+    es.onerror = function() {
+        es.close();
+    };
+}
+</script>
+</body>
+</html> 

@@ -33,6 +33,7 @@
     </properties>
     <modules>
         <module>spring-ai-webflux</module>
+        <module>spring-ai-webflux-mcp-server-stdio</module>
     </modules>
     <dependencyManagement>
         <dependencies>
