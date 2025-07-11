@@ -3,8 +3,6 @@ package com.cdd.demo.spring_ai_webflux_mcp_server_stdio.mcp_server_stdio.web.too
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,7 +13,7 @@ public class McpServerService {
      * 谷歌浏览器打开指定网址
      * @param path data
      * @return 无返回信息
-     * @throws RestClientException if the request fails
+     * @throws Exception if the request fails
      */
     @Tool(description = "谷歌浏览器打开指定网址")
     public void open(@ToolParam(description = "浏览器打开地址") String path) throws Exception {
@@ -28,7 +26,7 @@ public class McpServerService {
      * 保存文件
      * @param content 内容
      * @return 地址
-     * @throws RestClientException if the request fails
+     * @throws Exception if the request fails
      */
     @Tool(description = "保存到本地并返回本地地址")
     public  String save(@ToolParam(description = "内容") String content) {
