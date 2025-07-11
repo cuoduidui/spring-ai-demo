@@ -5,10 +5,12 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.mcp.AsyncMcpToolCallbackProvider;
 import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -22,7 +24,12 @@ public class OllamaClientConfig {
                         "你是游玩规划员。")
                 .defaultAdvisors(new SimpleLoggerAdvisor())
                 //此时设置 工具方法 初始化时调用 不存在阻塞不阻塞
-                .defaultToolCallbacks(new AsyncMcpToolCallbackProvider(mcpAsyncClients))
+//                .defaultToolCallbacks(new AsyncMcpToolCallbackProvider(mcpAsyncClients))
                 .build();
+    }
+
+    @Bean
+     List<ToolCallback> toolCallbacks(List<McpAsyncClient> mcpAsyncClients){
+        return Arrays.asList(new AsyncMcpToolCallbackProvider(mcpAsyncClients).getToolCallbacks());
     }
 }
