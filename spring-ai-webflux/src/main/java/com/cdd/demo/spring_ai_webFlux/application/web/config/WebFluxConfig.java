@@ -1,7 +1,9 @@
-package java.com.example.ai.demo_ai_webFlux.application.web.config;
+package com.cdd.demo.spring_ai_webFlux.application.web.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.tool.execution.ToolExecutionExceptionProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 
 @Configuration
+@Slf4j
 public class WebFluxConfig {
     @Bean
     public WebExceptionHandler streamErrorHandler() {
@@ -28,6 +31,14 @@ public class WebFluxConfig {
                 );
             }
             return Mono.error(ex);
+        };
+    }
+    @Bean
+    ToolExecutionExceptionProcessor customExceptionProcessor() {
+        return exception -> {
+            log.error("工具执行异常: {}", exception.getMessage());
+            // 返回友好的错误信息给模型
+            return "操作失败：" + exception.getMessage();
         };
     }
 }
