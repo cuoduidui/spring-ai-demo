@@ -34,6 +34,7 @@
     <modules>
         <module>spring-ai-webflux</module>
         <module>spring-ai-webflux-mcp-server-stdio</module>
+        <module>spring-ai-webFlux-mcp-server-sse</module>
     </modules>
     <dependencyManagement>
         <dependencies>

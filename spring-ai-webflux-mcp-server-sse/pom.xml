@@ -7,10 +7,9 @@
 		<artifactId>spring-ai-demo</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.cdd.demo</groupId>
-	<artifactId>spring-ai-webflux-mcp-server-stdio</artifactId>
+	<artifactId>spring-ai-webFlux-mcp-server-sse</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-ai-webflux-mcp-server-stdio</name>
+	<name>spring-ai-webFlux-mcp-server-sse</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
