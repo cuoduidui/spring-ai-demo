@@ -28,7 +28,7 @@ public class OllamaClientConfig {
                 .defaultAdvisors(new SimpleLoggerAdvisor())
                 //此时设置 工具方法 初始化时调用 不存在阻塞不阻塞
 //                .defaultToolCallbacks(new AsyncMcpToolCallbackProvider(mcpAsyncClients))
-                .defaultTools(gameOverToolService)
+//                .defaultTools(gameOverToolService)
                 .build();
     }
 
