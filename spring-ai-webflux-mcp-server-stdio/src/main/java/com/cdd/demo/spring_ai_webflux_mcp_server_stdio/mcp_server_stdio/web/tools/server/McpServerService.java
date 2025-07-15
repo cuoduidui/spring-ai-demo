@@ -15,7 +15,7 @@ public class McpServerService {
      * @return 无返回信息
      * @throws Exception if the request fails
      */
-    @Tool(description = "谷歌浏览器打开指定网址")
+    @Tool(description = "谷歌浏览器打开指定网址",returnDirect = true)
     public void open(@ToolParam(description = "浏览器打开地址") String path) throws Exception {
         ProcessBuilder pb = new ProcessBuilder("open", "-a", "Google Chrome", path);
         pb.redirectErrorStream(true); // 合并错误流
