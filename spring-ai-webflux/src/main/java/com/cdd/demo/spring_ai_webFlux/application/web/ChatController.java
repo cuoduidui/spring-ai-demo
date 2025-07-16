@@ -32,8 +32,8 @@ public class ChatController {
     private ChatClient ollamaClient;
     @Resource(name = "responseFilter")
     private Function<ChatResponse, String> responseFilter;
-    @Autowired
-    private List<ToolCallback> toolCallbacks;
+//    @Autowired
+//    private List<ToolCallback> toolCallbacks;
     @Autowired
     private GameOverToolService gameOverToolService;
     /**
@@ -51,7 +51,7 @@ public class ChatController {
 //                .build();
         Flux<String> firstFlux = ollamaClient
                 .prompt("name is 小智")
-                .toolCallbacks(toolCallbacks)
+//                .toolCallbacks(toolCallbacks)
                 .tools(gameOverToolService)
                 .toolContext(Map.of("name", "小智"))
                 .user(message).stream().content().cache();
