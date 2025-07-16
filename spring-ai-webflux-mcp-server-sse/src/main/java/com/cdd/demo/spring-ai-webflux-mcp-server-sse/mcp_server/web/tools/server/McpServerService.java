@@ -19,14 +19,4 @@ public class McpServerService {
     public String getActionMark(@ToolParam(description = "日期") String data) {
         return "代号：牛逼" + data;
     }
-    /**
-     * 通过时间获取一个行动代号
-     * @param data data
-     * @return 返回一个代号
-     * @throws RestClientException if the request fails
-     */
-    @Tool(description = "通过时间获取一个行动代号",resultConverter = )
-    public String getActionMark1(@ToolParam(description = "日期") String data) {
-        return "代号：牛逼" + data;
-    }
 }
