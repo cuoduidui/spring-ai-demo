@@ -5,6 +5,7 @@ import io.modelcontextprotocol.client.McpAsyncClient;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -50,10 +51,12 @@ public class ChatController {
 //                .toolCallbacks(dateTimeTools)
 //                .build();
         Flux<String> firstFlux = ollamaClient
-                .prompt("name is 小智")
+                .prompt("你是一个比较活泼的孩子。")
 //                .toolCallbacks(toolCallbacks)
-                .tools(gameOverToolService)
-                .toolContext(Map.of("name", "小智"))
+                .advisors(spec -> spec
+                        .param(ChatMemory.CONVERSATION_ID, "chat_memory_conversation_id1"))
+//                .tools(gameOverToolService)
+//                .toolContext(Map.of("name", "小智"))
                 .user(message).stream().content().cache();
         return firstFlux;
     }
