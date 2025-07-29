@@ -1,6 +1,6 @@
-package com.example.ai.demo_ai_webFlux.mcp_server;
+package com.cdd.demo.spring_ai_webflux_mcp_server_sse.mcp_server;
 
-import com.example.ai.demo_ai_webFlux.mcp_server.web.tools.server.McpServerService;
+import com.cdd.demo.spring_ai_webflux_mcp_server_sse.mcp_server.web.tools.server.McpServerService;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.function.FunctionToolCallback;

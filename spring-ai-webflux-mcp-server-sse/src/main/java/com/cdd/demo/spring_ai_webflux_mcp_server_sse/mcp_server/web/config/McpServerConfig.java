@@ -1,4 +1,5 @@
-package com.cdd.demo.spring_ai_webflux_mcp_server_stdio.mcp_server_stdio.web.config;
+package com.cdd.demo.spring_ai_webflux_mcp_server_sse.mcp_server.web.config;
+
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
