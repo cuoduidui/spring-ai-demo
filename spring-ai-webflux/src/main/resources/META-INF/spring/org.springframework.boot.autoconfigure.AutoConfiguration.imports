@@ -1,1 +1,2 @@
 com.cdd.demo.spring_ai_webFlux.application.web.config.MyStdioTransportAutoConfiguration
+com.cdd.demo.spring_ai_webFlux.application.web.config.MySseWebFluxTransportAutoConfiguration

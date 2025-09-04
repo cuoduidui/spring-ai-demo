@@ -4,6 +4,7 @@ import com.cdd.demo.spring_ai_webFlux.application.web.tools.server.GameOverToolS
 import io.modelcontextprotocol.client.McpAsyncClient;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.mcp.AsyncMcpToolCallbackProvider;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.tool.ToolCallback;
@@ -27,8 +28,10 @@ public class OllamaClientConfig {
                         "你是游玩规划员。")
                 .defaultAdvisors(new SimpleLoggerAdvisor())
                 //此时设置 工具方法 初始化时调用 不存在阻塞不阻塞
-//                .defaultToolCallbacks(new AsyncMcpToolCallbackProvider(mcpAsyncClients))
+                .defaultToolCallbacks(new AsyncMcpToolCallbackProvider(mcpAsyncClients))
 //                .defaultTools(gameOverToolService)
+                
+                .defaultOptions(ChatOptions.builder().build())
                 .build();
     }
 
