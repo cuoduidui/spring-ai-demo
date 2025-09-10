@@ -2,6 +2,7 @@ package com.cdd.demo.spring_ai_webflux_mcp_server_sse.mcp_server.web.config;
 
 import com.cdd.demo.spring_ai_webflux_mcp_server_sse.mcp_server.web.util.RsaUtil;
 import com.nimbusds.jose.crypto.impl.RSAKeyUtils;
+import io.netty.handler.codec.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -23,6 +24,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer.authorizationServer;
+
 
 @Configuration
 @EnableWebFluxSecurity
@@ -42,23 +46,38 @@ public class SecurityConfiguration {
     @Bean
     SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         http.csrf(csrf -> csrf.disable());
-        http.authorizeExchange(ex -> ex
-                .pathMatchers("/sse").permitAll()
-                .pathMatchers("/mcp/*").permitAll()
-                .anyExchange().authenticated()
-        ).oauth2ResourceServer(resource -> resource.jwt(Customizer.withDefaults()));
+        http
+                .authorizeExchange((authorize) -> authorize
+                        .pathMatchers(String.valueOf(HttpMethod.GET), "/sse/**").hasAuthority("SCOPE_message:read")
+                        .pathMatchers(String.valueOf(HttpMethod.POST), "/sse/**").hasAuthority("SCOPE_message:write")
+                        .pathMatchers(String.valueOf(HttpMethod.CONNECT), "/sse/**").hasAuthority("SCOPE_message:write")
+                        .anyExchange().authenticated()
+                );
+//                .oauth2ResourceServer((resourceServer) -> resourceServer
+//                        .jwt(withDefaults())
+//                );
+        // @formatter:on
         return http.build();
     }
-
-    /**
-     * 静态密钥场景
-     * @return
-     */
-    @Bean
-    public ReactiveJwtDecoder jwtDecoder() throws Exception {
-        RSAPublicKey publicKey = RsaUtil.getPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKGvSlxFDyqMrjUbAqmYkg68wM5OOohjDpIZHdUOgBc2Mch8rgdbr2d3sm151ONLLycFLCFfi+OFm1jzQHRd+NUCAwEAAQ==");// 加载RSA公钥
-        return NimbusReactiveJwtDecoder.withPublicKey(publicKey).build();
-    }
+//    @Bean
+//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.csrf(csrf -> csrf.disable());
+//        return http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+//                .with(authorizationServer(), withDefaults())
+//                .oauth2ResourceServer(resource -> resource.jwt(withDefaults()))
+//                .csrf(CsrfConfigurer::disable)
+//                .cors(withDefaults())
+//                .build();
+//    }
+//    /**
+//     * 静态密钥场景
+//     * @return
+//     */
+//    @Bean
+//    public ReactiveJwtDecoder jwtDecoder() throws Exception {
+//        RSAPublicKey publicKey = RsaUtil.getPublicKey("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKGvSlxFDyqMrjUbAqmYkg68wM5OOohjDpIZHdUOgBc2Mch8rgdbr2d3sm151ONLLycFLCFfi+OFm1jzQHRd+NUCAwEAAQ==");// 加载RSA公钥
+//        return NimbusReactiveJwtDecoder.withPublicKey(publicKey).build();
+//    }
 //@Bean
 //ReactiveJwtDecoder jwtDecoder() {
 //    return NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();

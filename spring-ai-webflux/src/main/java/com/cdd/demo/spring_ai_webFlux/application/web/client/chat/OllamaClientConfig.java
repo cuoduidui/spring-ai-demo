@@ -11,6 +11,8 @@ import org.springframework.ai.tool.ToolCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +24,7 @@ public class OllamaClientConfig {
     @Autowired
     private GameOverToolService gameOverToolService;
     @Bean("ollamaClient")
-    ChatClient ollamaClient(OllamaChatModel model) {
+    ChatClient ollamaClient(OllamaChatModel model, ReactiveClientRegistrationRepository clientRegistrations) {
         return ChatClient.builder(model)
                 .defaultSystem(
                         "你是游玩规划员。")
@@ -39,4 +41,5 @@ public class OllamaClientConfig {
      List<ToolCallback> toolCallbacks(List<McpAsyncClient> mcpAsyncClients){
         return Arrays.asList(new AsyncMcpToolCallbackProvider(mcpAsyncClients).getToolCallbacks());
     }
+
 }

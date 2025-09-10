@@ -65,4 +65,24 @@ public class WebFluxConfig {
         http.csrf(csrf -> csrf.disable());
         return http.build();
     }
+//    @Bean
+//    ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
+//            ReactiveClientRegistrationRepository clientRegistrationRepository,
+//            ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
+//
+//        // @formatter:off
+//        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
+//                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
+//                        .authorizationCode()
+//                        .refreshToken()
+//                        .clientCredentials()
+//                        .build();
+//        // @formatter:on
+//        DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager = new DefaultReactiveOAuth2AuthorizedClientManager(
+//                clientRegistrationRepository, authorizedClientRepository);
+//        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+//
+//        return authorizedClientManager;
+//    }
+
 }

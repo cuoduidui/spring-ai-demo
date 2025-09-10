@@ -12,17 +12,18 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.*;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -61,12 +62,14 @@ public class MySseWebFluxTransportAutoConfiguration {
         var objectMapper = objectMapperProvider.getIfAvailable(ObjectMapper::new);
 
         for (Map.Entry<String, McpSseClientProperties.SseParameters> serverParameters : sseProperties.getConnections().entrySet()) {
-            ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
-                    new ServerOAuth2AuthorizedClientExchangeFilterFunction(clientManager);
-            oauth2Client.setDefaultOAuth2AuthorizedClient(true);
+            ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
+                    clientManager);
+            oauth.setDefaultOAuth2AuthorizedClient(true);
             var webClientBuilder = webClientBuilderTemplate.clone().baseUrl(serverParameters.getValue().url());
-//            webClientBuilder.defaultHeader("Authorization", "Bearer " + clientManager.authorize(OAuth2AuthorizeRequest.withClientRegistrationId(serverParameters.getKey()).principal("client").build()).getAccessToken().getTokenValue());
-            webClientBuilder.filter(oauth2Client);
+            webClientBuilder.defaultHeader("Authorization",
+                    "Basic " + Base64.getEncoder().encodeToString(
+                            ("mcp-client" + ":" + "secret").getBytes()));
+            webClientBuilder.filter(oauth);
             String sseEndpoint = serverParameters.getValue().sseEndpoint() != null
                     ? serverParameters.getValue().sseEndpoint() : "/sse";
             var transport = WebFluxSseClientTransport.builder(webClientBuilder)
@@ -77,5 +80,24 @@ public class MySseWebFluxTransportAutoConfiguration {
         }
 
         return sseTransports;
+    }
+    @Bean
+    ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
+            ReactiveClientRegistrationRepository clientRegistrationRepository,
+            ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
+
+        // @formatter:off
+        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
+                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
+                        .authorizationCode()
+                        .refreshToken()
+                        .clientCredentials()
+                        .build();
+        // @formatter:on
+        DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager = new DefaultReactiveOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientRepository);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return authorizedClientManager;
     }
 }
