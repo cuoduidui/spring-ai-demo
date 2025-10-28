@@ -48,9 +48,9 @@ public class SecurityConfiguration {
         http.csrf(csrf -> csrf.disable());
         http
                 .authorizeExchange((authorize) -> authorize
-                        .pathMatchers(String.valueOf(HttpMethod.GET), "/sse/**").hasAuthority("SCOPE_message:read")
-                        .pathMatchers(String.valueOf(HttpMethod.POST), "/sse/**").hasAuthority("SCOPE_message:write")
-                        .pathMatchers(String.valueOf(HttpMethod.CONNECT), "/sse/**").hasAuthority("SCOPE_message:write")
+                        .pathMatchers(String.valueOf(HttpMethod.GET), "/*").hasAuthority("SCOPE_message:read")
+                        .pathMatchers(String.valueOf(HttpMethod.POST), "/*").hasAuthority("SCOPE_message:write")
+                        .pathMatchers(String.valueOf(HttpMethod.CONNECT), "/*").hasAuthority("SCOPE_message:write")
                         .anyExchange().authenticated()
                 );
 //                .oauth2ResourceServer((resourceServer) -> resourceServer
